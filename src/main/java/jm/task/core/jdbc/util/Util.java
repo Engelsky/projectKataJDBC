@@ -1,6 +1,5 @@
 package jm.task.core.jdbc.util;
 
-
 import jm.task.core.jdbc.model.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -16,12 +15,20 @@ import java.util.Properties;
 // реализация настройки соединения с БД
 public class Util {
     // настройки подключения к БД
+
+    // ===== JDBC константы =====
     // com.mysql.jdbc.Driver был предложен средой, но это же устаревшее
     // а у меня версия MySQL 8-ая, посему cj
     private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String DB_URL = "jdbc:mysql://localhost:3306/katapp1134";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "Bzkvn809";
+
+    // ===== Hibernate =====
+    private static SessionFactory sessionFactory;
+
+    // Добавил приватный конструктор, так Util - утилитный класс, экземпляры создавать ненада
+    private Util() {}
 
     public static Connection getConnection() {
         Connection conn = null;
@@ -38,8 +45,7 @@ public class Util {
         }
         return conn;
     }
-    //HIBERNATE конфиг
-    private static SessionFactory sessionFactory;
+
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             try {
@@ -50,7 +56,6 @@ public class Util {
 
                 configuration.setProperties(settings);
 
-                configuration.setProperties(settings);
                 // Добавляем наш класс-сущность
                 configuration.addAnnotatedClass(User.class);
 
@@ -76,7 +81,7 @@ public class Util {
         settings.put(Environment.SHOW_SQL, "true"); // Показываем SQL в консоли
         settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
         settings.put(Environment.HBM2DDL_AUTO, ""); // IDEA предлагает update,
-        // но по заданию мы создаем таблицу ручками
+        // но по заданию мы создаем таблицы ручками SQL в DAO
         return settings;
     }
 }
